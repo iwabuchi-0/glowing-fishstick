@@ -1,0 +1,126 @@
+import { TodoForm } from '@/components';
+import { TodoFormValues } from '@/components/TodoForm';
+import { Box, Heading } from '@chakra-ui/react';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { useForm } from 'react-hook-form';
+
+const CreatePage: NextPage = () => {
+  const { register } = useForm<TodoFormValues>();
+
+  return (
+    <>
+      <Head>
+        <title>新規作成</title>
+      </Head>
+
+      <Box bg='white' w='100%' h='100vh' p={4} color='white' marginTop='40px'>
+        <Box textAlign='center'>
+          <Heading color='green.400' textAlign='center'>
+            新規作成
+          </Heading>
+          <TodoForm register={register}>新規作成</TodoForm>
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+export default CreatePage;
+
+const TodoForm = (props: TodoFormProps) => {
+  const { onSubmit, register, defaultItem, children } = props;
+  return (
+    <>
+      <form onSubmit={onSubmit}>
+        <Grid margin='20px 0 10px 0' placeItems='center' gridGap='20px'>
+          <Input
+            defaultValue={defaultItem?.title}
+            placeholder='Title'
+            size='md'
+            width='200px'
+            margin='0 auto'
+            color='green'
+            {...register('title', {
+              required: 'This is required',
+            })}
+            required
+          />
+          <Input
+            defaultValue={defaultItem?.sendDate}
+            placeholder='Select Date'
+            size='md'
+            width='200px'
+            margin='0 auto'
+            type='date'
+            color='green'
+            {...register('sendDate', {
+              required: 'This is required',
+            })}
+            required
+          />
+        </Grid>
+        <BackButton />
+        <CommonButton type='submit'>{children}</CommonButton>
+      </form>
+    </>
+  );
+};
+
+export default TodoForm;
+
+import { Button } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+
+const BackButton = () => {
+  const router = useRouter();
+  return (
+    <>
+      <Button
+        textColor='white'
+        bg='green'
+        variant='outline'
+        onClick={() => router.push('/todo-app')}
+      >
+        戻る
+      </Button>
+    </>
+  );
+};
+export default BackButton;
+
+import { Button } from '@chakra-ui/react';
+import { MouseEventHandler, ReactNode } from 'react';
+
+export interface CommonButtonProps {
+  children: ReactNode;
+  isLoading?: boolean;
+  type?: 'reset' | 'button' | 'submit' | undefined;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+}
+
+const CommonButton = (props: CommonButtonProps) => {
+  const { children, onClick, isLoading, type } = props;
+  return (
+    <>
+      {isLoading ? (
+        <Button
+          type={type}
+          textColor='white'
+          bg='green'
+          variant='outline'
+          onClick={onClick}
+          isLoading
+        >
+          {children}
+        </Button>
+      ) : (
+        <Button type={type} textColor='white' bg='green' variant='outline' onClick={onClick}>
+          {children}
+        </Button>
+      )}
+    </>
+  );
+};
+export default CommonButton;
+
